@@ -41,6 +41,8 @@ After verifying node on your pc,
 #Install
     
     git clone https://github.com/FRIDA-LACNIC-UECE/front-end.git
+    cd front-end
+    cd quasar-front
     yarn install
     quasar dev
     
