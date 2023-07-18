@@ -20,12 +20,12 @@
         <q-card-section>
           <q-form class="q-gutter-md" @submit.prevent="submitRegister">
             <q-input label="User" v-model="register.username" :rules="[
-                val => !!val || 'Name is empty'
-              ]">
+              val => !!val || 'Name is empty'
+            ]">
             </q-input>
             <q-input label="Email" v-model="register.email" :rules="[
-                val => !!val || 'Email is empty'
-              ]">
+              val => !!val || 'Email is empty'
+            ]">
             </q-input>
             <q-input label="Password" :type="isPwd ? 'password' : 'text'" v-model="register.password"
               :rules="[val => (val && val.length >= 6) || 'Password is required and 6 characters']">
@@ -72,30 +72,30 @@ export default defineComponent({
         Notify.create({
           type: 'positive',
           message: res.data.message,
-          message: 'user created',
           timeout: 1000
         })
+        this.$router.push('/admin')
       }).catch(function (err) {
-          Loading.hide()
-          const status = err.response.status
-          if (status === 409) {
-            Notify.create({
-              type: "negative",
-              message: "Username or e-mail already in use.",
-              timeout: 5000,
-              actions: [
-                { label: 'OK', color: 'yellow', handler: () => { /* ... */ } }
-              ]
-            });
-          }
-          else {
-            Notify.create({
-              type: "negative",
-              message: "Oops! Something went wrong. Please try again later.",
-              timeout: 2000,
-            });
-          }
-        });
+        Loading.hide()
+        const status = err.response.status
+        if (status === 409) {
+          Notify.create({
+            type: "negative",
+            message: "Username or e-mail already in use.",
+            timeout: 5000,
+            actions: [
+              { label: 'OK', color: 'yellow', handler: () => { /* ... */ } }
+            ]
+          });
+        }
+        else {
+          Notify.create({
+            type: "negative",
+            message: "Oops! Something went wrong. Please try again later.",
+            timeout: 2000,
+          });
+        }
+      });
     }
   }
 })
