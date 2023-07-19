@@ -42,10 +42,7 @@ The Web application is being built to be a easy way for the final user to use th
 - [Vue-router](https://router.vuejs.org/) v4.0.0 - Expressive, configurable and convenient routing for Vue.js.
 - [Vuex](https://vuex.vuejs.org/) - Vuex is a state management pattern + library for Vue.js applications.
 - [Axios](https://axios-http.com/) v0.27.2 - Axios is a promise-based HTTP Client for node.js and the browser.
-- [Python](https://www.python.org/) - Open source programming language.
-- [Flask] - Web framework for building web applications and APIs in Python.
-- [SQLAlchemy](https://www.sqlalchemy.org/) - Object-Relational Mapping (ORM) library that provides a interface to interact with databases using Python.
-- [Swagger](https://swagger.io/) - A toolset that facilitates easy interaction with APIs and the creation of API documentation.
+
 
 
 ## Running
