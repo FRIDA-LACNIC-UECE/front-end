@@ -1,6 +1,6 @@
-# Data Protection System based on Encryptation and Anonymization Techniques - Front End
+# Data Protection System based on Encryptation and Anonymization Techniques - Front End (v.1.1.1)
 
-The current version of this System is up on Huawei's Cloud and can be accessed on [this link](http://110.238.69.32/)
+The current version of this System is up on Huawei's Cloud and can be accessed on [this link](http://http://119.8.145.124/)
 
 This repository contains only the Front end of Web application of the project. You can see the Client Agent part [here](https://github.com/FRIDA-LACNIC-UECE/agent) and the Back end of the Web app [here](https://github.com/FRIDA-LACNIC-UECE/back-end).
 
