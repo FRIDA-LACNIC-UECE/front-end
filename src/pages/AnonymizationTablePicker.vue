@@ -145,6 +145,7 @@ export default defineComponent({
       clearInterval(this.updateIntervalAnonymization);
       clearInterval(this.updateIntervalEncryption);
       this.selectedTable = ref(null)
+      this.getTableList()
     },
     getTableList() {
       if (!this.getToken) return;
