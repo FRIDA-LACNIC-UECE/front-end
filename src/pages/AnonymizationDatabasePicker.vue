@@ -56,9 +56,35 @@ export default defineComponent({
       return this.selected.length != 0
     },
     shareData(selected_id) {
-      this.$router.push({ name: "anonymitazation-table-picker", params: { data: selected_id } })
+      console.log(this.testDatabaseConnection)
+      if(this.testDatabaseConnection(selected_id) == 200){
+        this.$router.push({ name: "anonymitazation-table-picker", params: { data: selected_id } })
+      } else {
+        Notify.create({
+              type: "negative",
+              message: "Oops! Something went wrong. Please try again later.",
+              timeout: 2000,
+      });
+      }
     },
-
+    testDatabaseConnection(selected_id) {
+      if (!this.getToken) return
+      Loading.show()
+      api.post(`/database/${selected_id}/test_database_connection`, {
+        headers: {
+          Authorization: `Bearer ${this.getToken}`
+        }
+      }).then(response => {
+        Loading.hide()
+        console.log(response.response.status)
+        return response.response.status
+      })
+      .catch(function (err) {
+        Loading.hide()
+        console.log(err.response.status)
+        return err.response.status
+      })
+    },
     getDatabases() {
       if (!this.getToken) return
       Loading.show()
