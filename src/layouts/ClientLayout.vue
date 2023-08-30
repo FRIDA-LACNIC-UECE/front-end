@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout view="hHh lpR fFf"  @mousemove="resetTimers">
     <q-header elevated>
       <div id="app">
         <auto-logout>
@@ -96,13 +96,19 @@
     </q-drawer>
 
     <q-page-container>
+      <q-dialog v-model="showLogoutWarning" persistent>
+        <q-card>
+          <q-card-section>
+            Seu login será encerrado em 1 minuto devido à inatividade.
+          </q-card-section>
+        </q-card>
+      </q-dialog>
       <router-view />
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
-
 import { defineComponent, ref } from 'vue'
 import { mapGetters } from 'vuex'
 
@@ -113,62 +119,82 @@ export default defineComponent({
     ...mapGetters('auth', ['isAuthenticated']),
     ...mapGetters('auth', ['getMe'])
   },
+  watch: {
+    $route(to, from) {
+      this.resetTimers();
+    },
+  },
   data: function () {
     return {
       events: ['click', 'mousemove', 'mousedown', 'scroll', 'keypress', 'load'],
 
       warningTimer: null,
       logoutTimer: null,
+      inactivityLogoutTime: 10 * 60 * 1000, // 10 minutos em milissegundos
+      inactivityTimer: null,
       warningZone: false,
+      showLogoutWarning: false,
+      tokenExpirationTime: 8 * 60 * 60 * 1000,
     }
   },
   mounted() {
-    this.events.forEach(function (event) {
-      window.addEventListener(event, this.resetTimer);
-    }, this);
+    setTimeout(() => {
+      this.showLogoutWarning = true;
+    }, 9 * 60 * 1000);
+    setTimeout(() => {
+      this.logout();
+    }, this.tokenExpirationTime);
+    this.events.forEach((event) => {
+      window.addEventListener(event, this.resetTimers);
+    });
     this.setTimers();
   },
   destroyed() {
-    this.events.forEach(function (event) {
-      window.removeEventListener(event, this.resetTimer);
-    }, this); d
-    this.resetTimer();
+    this.events.forEach((event) => {
+      window.removeEventListener(event, this.resetTimers);
+    });
+    this.resetTimers();
   },
 
   methods: {
+    resetTimers() {
+      clearTimeout(this.inactivityTimer);
+      clearTimeout(this.warningTimer);
+      clearTimeout(this.logoutTimer);
+
+      this.setTimers();
+    },
+    startInactivityTimer() {
+      this.inactivityTimer = setTimeout(() => {
+        this.logoutUser();
+      }, this.inactivityLogoutTime);
+    },
+    startTokenExpirationTimer() {
+      setTimeout(() => {
+        this.logoutUser();
+      }, this.tokenExpirationTime);
+    },
     logout() {
       this.$store.dispatch('auth/signOut')
       this.$router.push('/login')
     },
-    setTimers: function () {
+    setTimers() {
+      this.startInactivityTimer();
+      this.startTokenExpirationTimer();
       this.warningTimer = setTimeout(this.warningMessage, 28800 * 1000);
       this.logoutTimer = setTimeout(this.logoutUser, 28880 * 1000);
 
       this.warningZone = false;
-
     },
-
-    warningMessage: function () {
-
+    warningMessage() {
       this.warningZone = true;
-
-
     },
-    logoutUser: function () {
+    logoutUser() {
       this.$store.dispatch('auth/signOut')
       this.$router.push('/login')
-
     },
-    resetTimer: function () {
-      clearTimeout(this.warningTimer);
-      clearTimeout(this.logoutTimer);
-
-
-      this.setTimers();
-    }
-
-
   },
+
   setup() {
     const leftDrawerOpen = ref(false)
     const rightDrawerOpen = ref(false)
@@ -191,9 +217,7 @@ export default defineComponent({
           color: 'secondary'
         })
       }
-
     }
   }
 })
-
 </script>
