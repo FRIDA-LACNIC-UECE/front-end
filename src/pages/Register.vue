@@ -24,14 +24,19 @@
             </q-input>
             <q-input label="Email" v-model="register.email" :rules="[val => !!val || 'Email is empty', isValidEmail]" hint="Enter valid email">
             </q-input>
-
-
             <q-input label="Password" :type="isPwd ? 'password' : 'text'" v-model="register.password"
-              :rules="[val => (val && val.length >= 6) || 'Password is required and 6 characters']">
-              <template v-slot:append>
-                <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
-              </template>
-            </q-input>
+  :rules="[val => (val && val.length >= 8) || 'Password must be at least 8 characters',
+          val => /[A-Z]/.test(val) || 'Password must contain at least one uppercase letter',
+          val => /[a-z]/.test(val) || 'Password must contain at least one lowercase letter',
+          val => /[0-9]/.test(val) || 'Password must contain at least one number',
+          val => {
+            const uniqueNumbers = new Set(val.match(/\d/g));
+            return uniqueNumbers.size === val.match(/\d/g).length || 'Password cannot have repeated numbers';
+          }]">
+</q-input>
+
+
+
             <div>
               <q-btn class="full-width" color="primary" label="Register" type="submit" rounded></q-btn>
               <div class="text-center q-mt-sm q-gutter-lg">
@@ -48,7 +53,7 @@
 <script>
 import { Notify } from 'quasar'
 import { api } from 'src/boot/axios'
-import { defineComponent } from 'vue'
+import { defineComponent, Loading } from 'vue'
 
 export default defineComponent({
   name: 'Register',
@@ -60,10 +65,28 @@ export default defineComponent({
         email: '',
         password: ''
       },
-      isPwd: true
+      isPwd: true,
+      passwordValidation: {
+      length: false,
+      uppercase: false,
+      lowercase: false,
+      number: false,
+      uniqueNumbers: false
+      }
     }
   },
   methods: {
+    validatePassword() {
+    const password = this.register.password;
+
+    this.passwordValidation.length = password.length >= 8;
+    this.passwordValidation.uppercase = /[A-Z]/.test(password);
+    this.passwordValidation.lowercase = /[a-z]/.test(password);
+    this.passwordValidation.number = /[0-9]/.test(password);
+
+    const uniqueNumbers = new Set(password.match(/\d/g));
+    this.passwordValidation.uniqueNumbers = uniqueNumbers.size === password.match(/\d/g).length;
+  },
     isValidEmail(val) {
       const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
       return emailPattern.test(val) || 'Invalid email';
@@ -117,5 +140,13 @@ export default defineComponent({
   left: 0;
   bottom: 0;
   z-index: -1;
+}
+
+.text-success {
+  color: green;
+}
+
+.text-error {
+  color: red;
 }
 </style>
