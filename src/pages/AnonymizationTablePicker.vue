@@ -57,7 +57,7 @@
         <q-btn icon="close" flat round dense v-close-popup @click="closeProgresDialog"/>
       </q-card-section>
       <q-card-section  class="q-pa-md row items-start q-gutter-md" >
-        
+
         <div class="column items-center" >
           <div class="col">Encryption Progress</div>
           <div class="col">
@@ -160,6 +160,7 @@ export default defineComponent({
         .then((response) => {
           Loading.hide();
           this.tablesList = response.data.items;
+          console.log(response.data)
         }).catch(function (err) {
         Loading.hide()
       });;
@@ -213,7 +214,7 @@ export default defineComponent({
   created() {
     this.databaseID = this.$route.params.data;
     this.checkSelectedDatabase()
-    
+
   }
 });
 </script>

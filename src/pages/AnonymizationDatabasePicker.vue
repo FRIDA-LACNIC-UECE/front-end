@@ -57,15 +57,15 @@ export default defineComponent({
     },
     shareData(selected_id) {
       console.log(this.testDatabaseConnection)
-      if(this.testDatabaseConnection(selected_id) == 200){
+      // if(this.testDatabaseConnection(selected_id) == 200){
         this.$router.push({ name: "anonymitazation-table-picker", params: { data: selected_id } })
-      } else {
-        Notify.create({
-              type: "negative",
-              message: "Oops! Something went wrong. Please try again later.",
-              timeout: 2000,
-      });
-      }
+      // } else {
+      //   Notify.create({
+      //         type: "negative",
+      //         message: "Oops! Something went wrong. Please try again later.",
+      //         timeout: 2000,
+      // });
+      // }
     },
     testDatabaseConnection(selected_id) {
       if (!this.getToken) return

@@ -96,10 +96,10 @@
     </q-drawer>
 
     <q-page-container>
-      <q-dialog v-model="showLogoutWarning" persistent>
+      <q-dialog v-model="showLogoutWarning">
         <q-card>
           <q-card-section>
-            Seu login será encerrado em 1 minuto devido à inatividade.
+            Your login will be terminated in 1 minute due to inactivity.
           </q-card-section>
         </q-card>
       </q-dialog>

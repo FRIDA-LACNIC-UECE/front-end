@@ -92,9 +92,7 @@
               val => !!val || 'Port is empty'
             ]" />
             <q-input class="col-8 " stack-label label="Password" :type="isPwd ? 'password' : 'text'"
-              v-model="database.password" :rules="[
-                val => !!val || 'Password is empty'
-              ]">
+              v-model="database.password">
               <template v-slot:append>
                 <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
               </template>
@@ -141,9 +139,7 @@
               val => !!val || 'Port is empty'
             ]" />
             <q-input class="col-8 " stack-label label="Password" :type="isPwd ? 'password' : 'text'"
-              v-model="databaseEdit.password" :rules="[
-                val => !!val || 'Password is empty'
-              ]">
+              v-model="databaseEdit.password">
               <template v-slot:append>
                 <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
               </template>
@@ -241,7 +237,7 @@ export default defineComponent({
             Authorization: `Bearer ${this.getToken}`,
           },
         })
-        .then((response) => { 
+        .then((response) => {
           Loading.hide()
           Notify.create({
             type: "positive",
@@ -406,22 +402,15 @@ export default defineComponent({
         });
     },
     submitDelete(databaseId) {
-      if (!this.getToken) return
-      Dialog.create({
-        title: 'Delete Database',
-        message: 'Do you really want to delete this database?',
-        cancel: true
-      }).onOk(async () => {
-        api.delete(`./database/${databaseId}`, {
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${this.getToken}` }
-        }).then(response => {
-          Notify.create({
-            type: 'positive',
-            message: response.data.message,
-            timeout: 1000
-          })
-          this.getDatabases()
-        }).catch(function (err) {
+       if (!this.getToken) return
+      api.delete(`./database/${databaseId}`, { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${this.getToken}` } }).then((res) => {
+        Notify.create({
+          type: 'positive',
+          message: res.data.message,
+          timeout: 1000
+        })
+        this.getDatabases()
+      }).catch(function (err) {
           Loading.hide()
           const status = err.response.status
           if (status === 401) {
@@ -430,11 +419,14 @@ export default defineComponent({
               message: "Unauthorized Access: You are not authorized to perform this action.",
             timeout: 2000
             });
-          } else if (status === 404) {
+          } else if (status === 409) {
             Notify.create({
               type: "negative",
-              message: "Database not found",
-            timeout: 2000
+              message: "Database already exists.",
+              timeout: 5000,
+              actions: [
+                { label: 'OK', color: 'yellow', handler: () => { /* ... */ } }
+              ]
             });
           }
           else {
@@ -445,7 +437,6 @@ export default defineComponent({
             });
           }
         });
-      })
     }
   },
   data() {
